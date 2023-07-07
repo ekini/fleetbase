@@ -4,7 +4,7 @@ target "docker-metadata-action" {}
 
 group "default" {
 
-  targets = ["app"]
+  targets = ["app", "scheduler"]
 
 }
 
@@ -17,13 +17,13 @@ target "app" {
     "linux/amd64",
   ]
   tags = notequal("", REGISTRY) ? [
-    "${REGISTRY}/app:latest",
+    "${REGISTRY}/fleetbase-app:latest",
   ] : []
 }
 target "scheduler" {
   inherits = ["app"]
   target   = "scheduler"
   tags = notequal("", REGISTRY) ? [
-    "${REGISTRY}/app:latest",
+    "${REGISTRY}/fleetbase-scheduler:latest",
   ] : []
 }
