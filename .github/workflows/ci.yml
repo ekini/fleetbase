@@ -46,7 +46,7 @@ jobs:
 
     - name: Build
       env:
-        tags: "${{ fromJSON(steps.meta.outputs.json).tags }}"
+        tags: "${{ toJSON(fromJSON(steps.meta.outputs.json).tags) }}"
       uses: docker/bake-action@v2
       with:
         push: true
