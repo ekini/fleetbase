@@ -25,7 +25,7 @@ target "app" {
   ]
   tags = notequal("", REGISTRY) ? formatlist(
     "${REGISTRY}/fleetbase-${tgt}:%s",
-    concat(["latest"], jsondecode(tags))
+    concat(["latest"], jsondecode(replace(tags, "willbereplaced:", "")))
   ) : []
 }
 #target "scheduler" {
