@@ -2,7 +2,7 @@ name: Fleetbase CI
 
 on:
   push:
-    branches: ["*"]
+    branches: ["feature/action_builds"]
     tags:
       - 'v*'
   pull_request:
