@@ -38,14 +38,13 @@ jobs:
       id: meta
       uses: docker/metadata-action@v4
       with:
-        images: |
-          ${{ env.REGISTRY }}/app
-          ${{ env.REGISTRY }}/scheduler
         tags: |
           type=semver,pattern={{version}}
           type=semver,pattern={{major}}.{{minor}}
 
     - name: Build
+      env:
+        tags: ${{ steps.meta.outputs.tags }}
       uses: docker/bake-action@v2
       with:
         push: true
