@@ -16,14 +16,8 @@ target "app" {
   platforms = [
     "linux/amd64",
   ]
-  tags = notequal("", REGISTRY) ? [
-    "${REGISTRY}/fleetbase-app:latest",
-  ] : []
 }
 target "scheduler" {
   inherits = ["app"]
   target   = "scheduler"
-  tags = notequal("", REGISTRY) ? [
-    "${REGISTRY}/fleetbase-scheduler:latest",
-  ] : []
 }
