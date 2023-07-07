@@ -15,7 +15,7 @@ target "app" {
   inherits = ["docker-metadata-action"]
 
   matrix = {
-    tgt = ["app", "scheduler"]
+    tgt = ["app", "scheduler", "jobs", "events"]
   }
   context    = "./"
   target     = tgt
@@ -28,7 +28,3 @@ target "app" {
     concat(["latest"], jsondecode(replace(tags, "willbereplaced:", "")))
   ) : []
 }
-#target "scheduler" {
-#  inherits = ["app"]
-#  target   = "scheduler"
-#}
