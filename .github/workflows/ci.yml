@@ -7,11 +7,16 @@ on:
       - 'v*'
   pull_request:
     branches: [ main ]
+env:
+  REGISTRY: ghcr.io/fleetbase
 
 jobs:
   build:
     name: Build and Start Docker Services
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
     - name: Checkout Code
@@ -22,16 +27,32 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
-    - name: Prepare Composer Auth Secret
-      run: |
-        if [[ -n "${{ secrets._GITHUB_AUTH_TOKEN }}" ]]; then
-          echo '{"github-oauth": {"github.com": "'${{ secrets._GITHUB_AUTH_TOKEN }}'"}}' > composer-auth.json
-        else
-          echo '{}' > composer-auth.json
-        fi
+    - name: Log in to the Container registry
+      uses: docker/login-action@v2
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Build and Release
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@v6
+      with:
+        images: |
+          name=,enable=true
+        tags: |
+          type=edge,branch=main
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+
+    - name: Build and release
+      if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) && success()
+      env:
+        # get tags from the json object and pass as a string-encoded list
+        tags: "${{ toJSON(fromJSON(steps.meta.outputs.json).tags) }}"
       uses: docker/bake-action@v2
       with:
+        push: true
         files: |
           ./docker-bake.hcl
+          ${{ steps.meta.outputs.bake-file }}
