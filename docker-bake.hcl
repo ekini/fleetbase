@@ -31,7 +31,7 @@ target "app" {
 
   tags = notequal("", REGISTRY) ? formatlist(
     GCP ? "${REGISTRY}/${tgt}:%s" : "${REGISTRY}:${tgt}-%s",
-    compact(["latest", VERSION])
+    compact(concat(["latest", VERSION], jsondecode(tags)))
   ) : []
 
   args = {
@@ -53,6 +53,6 @@ target "app-httpd" {
 
   tags = notequal("", REGISTRY) ? formatlist(
     GCP ? "${REGISTRY}/app-httpd:%s" : "${REGISTRY}:app-httpd-%s",
-    compact(["latest", VERSION])
+    compact(concat(["latest", VERSION], jsondecode(tags)))
   ) : []
 }
