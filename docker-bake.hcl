@@ -13,6 +13,8 @@ group "default" {
 target "docker-metadata-action" {}
 
 target "app" {
+  inherits = ["docker-metadata-action"]
+
   name = "app-${tgt}"
 
   // use matrix strategy to build several targets at once
