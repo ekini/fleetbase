@@ -38,7 +38,7 @@ jobs:
       uses: docker/metadata-action@v5
       with:
         images: |
-          name=,enable=true
+          name=,enable=false
         tags: |
           type=edge,branch=main
           type=semver,pattern={{version}}
