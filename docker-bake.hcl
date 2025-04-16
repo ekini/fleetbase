@@ -43,6 +43,8 @@ target "app" {
 }
 
 target "app-httpd" {
+  inherits = ["docker-metadata-action"]
+
   context    = "./"
   dockerfile = "docker/httpd/Dockerfile"
   platforms = [
@@ -51,6 +53,6 @@ target "app-httpd" {
 
   tags = notequal("", REGISTRY) ? formatlist(
     GCP ? "${REGISTRY}/app-httpd:%s" : "${REGISTRY}:app-httpd-%s",
-    compact(concat(["latest", VERSION], jsondecode(tags)))
+    compact(["latest", VERSION])
   ) : []
 }
