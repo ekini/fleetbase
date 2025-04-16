@@ -47,12 +47,9 @@ jobs:
     - name: Build and release
       if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) && success()
       env:
-        # get tags from the json object and pass as a string-encoded list
-        tags: "${{ toJSON(fromJSON(steps.meta.outputs.json).tags) }}"
         GCP: "true" # to switch to the correct image name format
-      uses: docker/bake-action@v2
+      uses: docker/bake-action@v6
       with:
         push: true
         files: |
           ./docker-bake.hcl
-          ${{ steps.meta.outputs.bake-file }}
