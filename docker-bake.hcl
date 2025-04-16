@@ -4,10 +4,13 @@ variable "VERSION" { default = "latest" }
 variable "CACHE" { default = "" }
 variable "GCP" { default = false }
 variable "GITHUB_AUTH_KEY" { default = "" }
+variable "tags" { default = "[]" }
 
 group "default" {
   targets = ["app", "app-httpd"]
 }
+
+target "docker-metadata-action" {}
 
 target "app" {
   name = "app-${tgt}"
