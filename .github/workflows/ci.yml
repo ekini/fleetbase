@@ -50,6 +50,7 @@ jobs:
         GCP: "true" # to switch to the correct image name format
       uses: docker/bake-action@v6
       with:
+        source: . # to not clone everything again
         push: true
         files: |
           ./docker-bake.hcl
