@@ -54,7 +54,7 @@ target "app-httpd" {
   annotations = target.docker-metadata-action.annotations
 
   tags = notequal("", REGISTRY) ? formatlist(
-    GCP ? "${REGISTRY}/app-httpd:%s" : "${REGISTRY}:app-httpd-%s",
+    GCP ? "${REGISTRY}/app-httpd:%s" : GHCR ? "${REGISTRY}/fleetbase-app-httpd:%s" : "${REGISTRY}:app-httpd-%s",
     compact(concat(["latest", VERSION], target.docker-metadata-action.tags))
   ) : []
 }
