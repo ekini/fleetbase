@@ -4,17 +4,16 @@ variable "VERSION" { default = "latest" }
 variable "CACHE" { default = "" }
 variable "GCP" { default = false }
 variable "GITHUB_AUTH_KEY" { default = "" }
-variable "tags" { default = "[]" }
 
 group "default" {
   targets = ["app", "app-httpd"]
 }
 
-target "docker-metadata-action" {}
+target "docker-metadata-action" {
+  tags = []
+}
 
 target "app" {
-  inherits = ["docker-metadata-action"]
-
   name = "app-${tgt}"
 
   // use matrix strategy to build several targets at once
@@ -29,9 +28,11 @@ target "app" {
     "linux/amd64",
   ]
 
+  annotations = target.docker-metadata-action.annotations
+
   tags = notequal("", REGISTRY) ? formatlist(
     GCP ? "${REGISTRY}/${tgt}:%s" : "${REGISTRY}:${tgt}-%s",
-    compact(["latest", VERSION])
+    compact(concat(["latest", VERSION], target.docker-metadata-action.tags))
   ) : []
 
   args = {
@@ -49,8 +50,10 @@ target "app-httpd" {
     "linux/amd64",
   ]
 
+  annotations = target.docker-metadata-action.annotations
+
   tags = notequal("", REGISTRY) ? formatlist(
     GCP ? "${REGISTRY}/app-httpd:%s" : "${REGISTRY}:app-httpd-%s",
-    compact(concat(["latest", VERSION], jsondecode(tags)))
+    compact(concat(["latest", VERSION], target.docker-metadata-action.tags))
   ) : []
 }
