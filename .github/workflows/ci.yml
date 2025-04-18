@@ -48,7 +48,7 @@ jobs:
       if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) && success()
       env:
         CACHE: type=gha
-        GCP: "true" # to switch to the correct image name format
+        GHCR: "true" # to switch to the correct image name format
       uses: docker/bake-action@v6
       with:
         source: . # to not clone everything again

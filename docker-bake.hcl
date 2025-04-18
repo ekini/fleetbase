@@ -3,6 +3,7 @@ variable "REGISTRY" { default = "" }
 variable "VERSION" { default = "latest" }
 variable "CACHE" { default = "" }
 variable "GCP" { default = false }
+variable "GHCR" { default = false } // github container registry
 variable "GITHUB_AUTH_KEY" { default = "" }
 
 group "default" {
@@ -31,7 +32,7 @@ target "app" {
   annotations = target.docker-metadata-action.annotations
 
   tags = notequal("", REGISTRY) ? formatlist(
-    GCP ? "${REGISTRY}/${tgt}:%s" : "${REGISTRY}:${tgt}-%s",
+    GCP ? "${REGISTRY}/${tgt}:%s" : GHCR ? "${REGISTRY}/fleetbase-${tgt}:%s" : "${REGISTRY}:${tgt}-%s",
     compact(concat(["latest", VERSION], target.docker-metadata-action.tags))
   ) : []
 
