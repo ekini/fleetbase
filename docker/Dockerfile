@@ -58,7 +58,7 @@ RUN sed -e 's/^expose_php.*/expose_php = Off/' "$PHP_INI_DIR/php.ini-production"
 RUN npm install -g chokidar pnpm ember-cli npm-cli-login
 
 # Install ssm-parent
-COPY --from=ghcr.io/springload/ssm-parent:1.8 /usr/bin/ssm-parent /sbin/ssm-parent
+COPY --from=ghcr.io/ekini/ssm-parent:1.9 /usr/bin/ssm-parent /sbin/ssm-parent
 
 # Create the pnpm directory and set the PNPM_HOME environment variable
 RUN mkdir -p ~/.pnpm
