@@ -10,6 +10,10 @@ group "default" {
   targets = ["app", "app-httpd"]
 }
 
+group "all" {
+  targets = ["default", "console"]
+}
+
 target "docker-metadata-action" {
   tags = []
 }
@@ -55,6 +59,20 @@ target "app-httpd" {
 
   tags = notequal("", REGISTRY) ? formatlist(
     GCP ? "${REGISTRY}/app-httpd:%s" : GHCR ? "${REGISTRY}/fleetbase-app-httpd:%s" : "${REGISTRY}:app-httpd-%s",
+    compact(concat(["latest", VERSION], target.docker-metadata-action.tags))
+  ) : []
+}
+target "console" {
+  context    = "./"
+  dockerfile = "console/Dockerfile.server-build"
+  platforms = [
+    "linux/amd64",
+  ]
+
+  annotations = target.docker-metadata-action.annotations
+
+  tags = notequal("", REGISTRY) ? formatlist(
+    GCP ? "${REGISTRY}/console:%s" : GHCR ? "${REGISTRY}/fleetbase-console:%s" : "${REGISTRY}:console-%s",
     compact(concat(["latest", VERSION], target.docker-metadata-action.tags))
   ) : []
 }

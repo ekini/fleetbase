@@ -52,6 +52,7 @@ jobs:
       uses: docker/bake-action@v6
       with:
         source: . # to not clone everything again
+        targets: all
         push: true
         files: |
           ./docker-bake.hcl
